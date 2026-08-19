@@ -1,0 +1,29 @@
+@inherits LayoutComponentBase
+@inject AuthService Auth
+
+<div class="page">
+    <header class="topbar">
+        <a class="brand" href="/">SakerLabb <span>Support</span></a>
+        <NavMenu />
+        <div class="session">
+            @if (Auth.IsSignedIn())
+            {
+                var user = Auth.Current();
+                <span class="who">@user!.Username (@user.Role)</span>
+                <a class="btn-link" href="/account/logout">Logga ut</a>
+            }
+            else
+            {
+                <a class="btn-link" href="/login">Logga in</a>
+            }
+        </div>
+    </header>
+
+    <main>
+        @Body
+    </main>
+
+    <footer>
+        SakerLabb Support 1.4.2 &middot; internt ärendesystem &middot; drift: node @Environment.MachineName
+    </footer>
+</div>

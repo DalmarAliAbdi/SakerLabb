@@ -1,0 +1,13 @@
+@page "/diagnostik"
+
+<PageTitle>Diagnostik</PageTitle>
+
+<h1>Nätverksdiagnostik</h1>
+
+<p class="muted">Kontrollera att en server svarar innan du eskalerar ärendet till drift.</p>
+
+<form method="get" action="/diagnostik/ping" class="form-narrow">
+    <label>Värdnamn eller IP</label>
+    <input class="form-control" name="host" value="localhost" />
+    <button class="btn btn-primary" type="submit">Kör ping</button>
+</form>

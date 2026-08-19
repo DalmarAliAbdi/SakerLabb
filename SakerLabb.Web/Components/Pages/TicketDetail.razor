@@ -1,0 +1,65 @@
+@page "/tickets/{Id}"
+@inject TicketRepository Tickets
+@inject AuthService Auth
+
+<PageTitle>Ärende @Id</PageTitle>
+
+@if (Ticket is null)
+{
+    <h1>Ärendet finns inte</h1>
+    <p class="muted">Ärende @Id kunde inte hittas.</p>
+}
+else
+{
+    <h1>@Ticket.Title</h1>
+
+    <dl class="meta">
+        <dt>Nummer</dt><dd>@Ticket.Id</dd>
+        <dt>Status</dt><dd>@Ticket.Status</dd>
+        <dt>Prioritet</dt><dd>@Ticket.Priority</dd>
+        <dt>Beställare</dt><dd>@Ticket.OwnerName</dd>
+        <dt>Skapat</dt><dd>@Ticket.Created</dd>
+    </dl>
+
+    <div class="ticket-body">@((MarkupString)Ticket.Body)</div>
+
+    <h2>Kommentarer</h2>
+
+    @foreach (var comment in Comments)
+    {
+        <div class="comment">
+            <div class="comment-head">@comment.Author &middot; @comment.Created</div>
+            <div class="comment-text">@((MarkupString)comment.Text)</div>
+        </div>
+    }
+
+    <form method="post" action="/ticket/comment" class="form-narrow">
+        <input type="hidden" name="ticketId" value="@Ticket.Id" />
+        <label>Ny kommentar</label>
+        <textarea class="form-control" name="text" rows="3"></textarea>
+        <button class="btn btn-primary" type="submit">Spara kommentar</button>
+    </form>
+
+    <form method="post" action="/ticket/status" class="form-inline">
+        <input type="hidden" name="ticketId" value="@Ticket.Id" />
+        <select class="form-select" name="status">
+            <option>Öppet</option>
+            <option>Pågående</option>
+            <option>Stängt</option>
+        </select>
+        <button class="btn btn-secondary" type="submit">Byt status</button>
+    </form>
+}
+
+@code {
+    [Parameter] public string Id { get; set; } = "";
+
+    private Ticket? Ticket { get; set; }
+    private List<Comment> Comments { get; set; } = new();
+
+    protected override void OnParametersSet()
+    {
+        Ticket = Tickets.GetById(Id);
+        Comments = Tickets.GetComments(Id);
+    }
+}

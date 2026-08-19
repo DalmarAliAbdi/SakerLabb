@@ -1,0 +1,35 @@
+@page "/"
+@inject AuthService Auth
+
+<PageTitle>SakerLabb Support</PageTitle>
+
+<h1>Internt ärendesystem</h1>
+
+<p class="lead">
+    SakerLabb Support hanterar inkommande ärenden från kunder och intern drift.
+    Sök i ärendelistan, kommentera och stäng när ärendet är löst.
+</p>
+
+@if (!Auth.IsSignedIn())
+{
+    <p><a class="btn btn-primary" href="/login">Logga in för att komma igång</a></p>
+}
+else
+{
+    <p><a class="btn btn-primary" href="/tickets">Till ärendelistan</a></p>
+}
+
+<div class="cards">
+    <div class="card-item">
+        <h3>Ärenden</h3>
+        <p>Fritextsökning över titel och beskrivning, sortering på valfri kolumn.</p>
+    </div>
+    <div class="card-item">
+        <h3>Bilagor</h3>
+        <p>Dokument som kunder skickat in ligger under bilagor och kan laddas ned direkt.</p>
+    </div>
+    <div class="card-item">
+        <h3>Integration</h3>
+        <p>Ärenden kan importeras från partnersystem som XML eller JSON.</p>
+    </div>
+</div>

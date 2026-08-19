@@ -1,0 +1,45 @@
+@page "/reset"
+
+<PageTitle>Återställ lösenord</PageTitle>
+
+<h1>Återställ lösenord</h1>
+
+@if (Error == "1")
+{
+    <div class="alert alert-danger">Fel svar på säkerhetsfrågan.</div>
+}
+@if (Error == "2")
+{
+    <div class="alert alert-danger">Koden är ogiltig eller förbrukad.</div>
+}
+
+@if (string.IsNullOrEmpty(Token))
+{
+    <form method="post" action="/account/reset/start" class="form-narrow">
+        <label>Användarnamn</label>
+        <input class="form-control" name="username" />
+
+        <label>Vad hette ditt första husdjur, eller var växte du upp?</label>
+        <input class="form-control" name="answer" />
+
+        <button class="btn btn-primary" type="submit">Hämta återställningskod</button>
+    </form>
+}
+else
+{
+    <div class="alert alert-info">Din återställningskod är <strong>@Token</strong>.</div>
+
+    <form method="post" action="/account/reset/complete" class="form-narrow">
+        <input type="hidden" name="token" value="@Token" />
+
+        <label>Nytt lösenord</label>
+        <input class="form-control" type="password" name="password" />
+
+        <button class="btn btn-primary" type="submit">Spara nytt lösenord</button>
+    </form>
+}
+
+@code {
+    [SupplyParameterFromQuery] public string? Token { get; set; }
+    [SupplyParameterFromQuery] public string? Error { get; set; }
+}

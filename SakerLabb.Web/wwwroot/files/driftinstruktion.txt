@@ -1,0 +1,13 @@
+Driftinstruktion SakerLabb Support 1.4.2
+========================================
+
+Applikationsserver: node app-01
+Databas: sakerlabb.db (SQLite, lokal fil)
+Backupfonster: 02:00-03:00
+
+Servicekonton
+-------------
+svc_backup   Vinter2019
+svc_report   Rapport!2024
+
+Kontakt vid larm: drift@sakerlabb.internal

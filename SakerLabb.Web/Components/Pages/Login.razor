@@ -1,0 +1,38 @@
+@page "/login"
+
+<PageTitle>Logga in</PageTitle>
+
+<h1>Logga in</h1>
+
+@if (Error == "1")
+{
+    <div class="alert alert-danger">
+        Fel användarnamn eller lösenord för @((MarkupString)(Username ?? "")).
+    </div>
+}
+
+@if (Reset == "1")
+{
+    <div class="alert alert-success">Lösenordet är uppdaterat. Logga in med det nya lösenordet.</div>
+}
+
+<form method="post" action="/account/login" class="form-narrow">
+    <label>Användarnamn</label>
+    <input class="form-control" name="username" value="@Username" autocomplete="username" />
+
+    <label>Lösenord</label>
+    <input class="form-control" type="password" name="password" autocomplete="current-password" />
+
+    <input type="hidden" name="returnUrl" value="@ReturnUrl" />
+
+    <button class="btn btn-primary" type="submit">Logga in</button>
+</form>
+
+<p class="muted"><a href="/reset">Glömt lösenordet?</a></p>
+
+@code {
+    [SupplyParameterFromQuery] public string? Error { get; set; }
+    [SupplyParameterFromQuery] public string? Reset { get; set; }
+    [SupplyParameterFromQuery] public string? Username { get; set; }
+    [SupplyParameterFromQuery] public string? ReturnUrl { get; set; }
+}

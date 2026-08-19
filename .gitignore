@@ -1,0 +1,7 @@
+bin/
+obj/
+*.db
+*.db-shwm
+*.db-wal
+.vs/
+*.user

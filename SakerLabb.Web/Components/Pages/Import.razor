@@ -1,0 +1,28 @@
+@page "/import"
+@inject ImportService ImportSvc
+
+<PageTitle>Import</PageTitle>
+
+<h1>Import från partnersystem</h1>
+
+<p class="muted">
+    Klistra in ett ärende i XML eller JSON, eller hämta det direkt från partnerns endpoint.
+</p>
+
+<form method="post" action="/import/xml" class="form-narrow">
+    <label>XML</label>
+    <textarea class="form-control" name="xml" rows="6">&lt;arende&gt;&lt;titel&gt;Exempel&lt;/titel&gt;&lt;/arende&gt;</textarea>
+    <button class="btn btn-primary" type="submit">Importera XML</button>
+</form>
+
+<form method="post" action="/import/json" class="form-narrow">
+    <label>JSON</label>
+    <textarea class="form-control" name="json" rows="6">{ "titel": "Exempel", "prioritet": "Normal" }</textarea>
+    <button class="btn btn-primary" type="submit">Importera JSON</button>
+</form>
+
+<form method="get" action="/import/fetch" class="form-narrow">
+    <label>Hämta från adress</label>
+    <input class="form-control" name="url" value="http://partner.example/arenden.xml" />
+    <button class="btn btn-secondary" type="submit">Hämta</button>
+</form>

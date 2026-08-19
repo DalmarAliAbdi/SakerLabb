@@ -1,0 +1,59 @@
+@page "/admin"
+@inject UserRepository Users
+
+<PageTitle>Administration</PageTitle>
+
+<h1>Administration</h1>
+
+<p class="muted">Användare och behörigheter i SakerLabb Support.</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Användarnamn</th>
+            <th>Roll</th>
+            <th>E-post</th>
+            <th>Personnummer</th>
+            <th>Lösenordshash</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in All)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.Username</td>
+                <td>@user.Role</td>
+                <td>@user.Email</td>
+                <td>@user.Personnummer</td>
+                <td class="hash">@user.PasswordHash</td>
+                <td>
+                    <form method="post" action="/account/role" class="form-inline">
+                        <input type="hidden" name="userId" value="@user.Id" />
+                        <select class="form-select" name="role">
+                            <option>User</option>
+                            <option>Agent</option>
+                            <option>Admin</option>
+                        </select>
+                        <button class="btn btn-secondary" type="submit">Spara</button>
+                    </form>
+                    <form method="post" action="/account/delete" class="form-inline">
+                        <input type="hidden" name="userId" value="@user.Id" />
+                        <button class="btn btn-danger" type="submit">Ta bort</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<User> All { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        All = Users.All();
+    }
+}

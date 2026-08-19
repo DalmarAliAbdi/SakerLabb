@@ -1,0 +1,65 @@
+@page "/tickets"
+@inject TicketRepository Repo
+@inject AuthService Auth
+
+<PageTitle>Ärenden</PageTitle>
+
+<h1>Ärenden</h1>
+
+<form method="get" action="/tickets" class="searchbar">
+    <input class="form-control" name="search" value="@Search" placeholder="Sök i titel och beskrivning" />
+    <select class="form-select" name="sort">
+        <option value="t.Id DESC">Senaste först</option>
+        <option value="t.Priority ASC">Prioritet</option>
+        <option value="t.Status ASC">Status</option>
+    </select>
+    <button class="btn btn-primary" type="submit">Sök</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Search))
+{
+    <p class="result-head">@((MarkupString)("Sökresultat för <strong>" + Search + "</strong>"))</p>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nr</th>
+            <th>Titel</th>
+            <th>Status</th>
+            <th>Prioritet</th>
+            <th>Beställare</th>
+            <th>Skapat</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ticket in Result)
+        {
+            <tr>
+                <td>@ticket.Id</td>
+                <td><a href="/tickets/@ticket.Id">@ticket.Title</a></td>
+                <td>@ticket.Status</td>
+                <td>@ticket.Priority</td>
+                <td>@ticket.OwnerName</td>
+                <td>@ticket.Created</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Result.Count == 0)
+{
+    <p class="muted">Inga ärenden matchade sökningen.</p>
+}
+
+@code {
+    [SupplyParameterFromQuery] public string? Search { get; set; }
+    [SupplyParameterFromQuery] public string? Sort { get; set; }
+
+    private List<Ticket> Result { get; set; } = new();
+
+    protected override void OnParametersSet()
+    {
+        Result = Repo.Search(Search, Sort);
+    }
+}

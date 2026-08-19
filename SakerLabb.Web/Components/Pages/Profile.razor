@@ -1,0 +1,34 @@
+@page "/profil"
+@inject AuthService Auth
+@inject UserRepository Users
+
+<PageTitle>Min profil</PageTitle>
+
+<h1>Min profil</h1>
+
+@if (Me is null)
+{
+    <p class="muted">Du är inte inloggad. <a href="/login">Logga in</a>.</p>
+}
+else
+{
+    <dl class="meta">
+        <dt>Användarnamn</dt><dd>@Me.Username</dd>
+        <dt>Roll</dt><dd>@Me.Role</dd>
+        <dt>E-post</dt><dd>@Me.Email</dd>
+        <dt>Personnummer</dt><dd>@Me.Personnummer</dd>
+    </dl>
+}
+
+@code {
+    private User? Me { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var session = Auth.Current();
+        if (session is not null)
+        {
+            Me = Users.GetById(session.Id.ToString());
+        }
+    }
+}
