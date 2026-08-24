@@ -14,18 +14,29 @@ public class FileService
 
     public string ReadDocument(string name)
     {
-    var safeFileName = Path.GetFileName(name);
-    var rootPath = Path.GetFullPath(_root);
-    var fullPath = Path.GetFullPath(Path.Combine(rootPath, safeFileName));
+        // 1. Avvisa direkt om filnamnet är tomt eller innehåller sökvägsmanipulation
+        if (string.IsNullOrWhiteSpace(name) || name.Contains("..") || name.Contains('/') || name.Contains('\\'))
+        {
+            throw new ArgumentException("Ogiltigt filnamn.");
+        }
 
-    if (!fullPath.StartsWith(rootPath, StringComparison.OrdinalIgnoreCase))
-    {
-        _logger.LogWarning("Försök till Path Traversal upptäckt för fil: {Name}", name);
-        throw new UnauthorizedAccessException("Ogiltig eller otillåten filsökväg.");
-    }
+        // 2. Säkerställ korrekt rotsökväg med katalogseparator
+        var rootPath = Path.GetFullPath(_root);
+        if (!rootPath.EndsWith(Path.DirectorySeparatorChar.ToString()))
+        {
+            rootPath += Path.DirectorySeparatorChar;
+        }
 
-    _logger.LogInformation("Läser bilaga {Name} från {Path}", safeFileName, fullPath);
-    return File.ReadAllText(fullPath);
+        var safeFileName = Path.GetFileName(name);
+        var fullPath = Path.GetFullPath(Path.Combine(rootPath, safeFileName));
+
+        // 3. Verifiera att sökvägen strikt stannar inom rotkatalogen
+        if (!fullPath.StartsWith(rootPath, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new UnauthorizedAccessException("Åtkomst nekad.");
+        }
+
+        return File.ReadAllText(fullPath);
     }
 
     public byte[] ReadBytes(string name)
