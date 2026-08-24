@@ -20,7 +20,7 @@ builder.Services.AddSingleton<FileService>();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy => policy
-        .AllowAnyOrigin()
+        .WithOrigins("http://localhost:5080", "https://localhost:5081")
         .AllowAnyHeader()
         .AllowAnyMethod());
 });

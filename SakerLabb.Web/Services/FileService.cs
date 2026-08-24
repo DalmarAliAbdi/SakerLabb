@@ -14,9 +14,18 @@ public class FileService
 
     public string ReadDocument(string name)
     {
-        var path = Path.Combine(_root, name);
-        _logger.LogInformation("Läser bilaga {Name} från {Path}", name, path);
-        return File.ReadAllText(path);
+    var safeFileName = Path.GetFileName(name);
+    var rootPath = Path.GetFullPath(_root);
+    var fullPath = Path.GetFullPath(Path.Combine(rootPath, safeFileName));
+
+    if (!fullPath.StartsWith(rootPath, StringComparison.OrdinalIgnoreCase))
+    {
+        _logger.LogWarning("Försök till Path Traversal upptäckt för fil: {Name}", name);
+        throw new UnauthorizedAccessException("Ogiltig eller otillåten filsökväg.");
+    }
+
+    _logger.LogInformation("Läser bilaga {Name} från {Path}", safeFileName, fullPath);
+    return File.ReadAllText(fullPath);
     }
 
     public byte[] ReadBytes(string name)
